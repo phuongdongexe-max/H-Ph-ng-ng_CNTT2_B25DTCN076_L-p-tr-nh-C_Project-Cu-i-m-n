@@ -105,7 +105,7 @@ void UpdateInfo() {
     char changeId[20];
 
     printf("Cap nhat thong tin.\n");
-    clearStdin();  // Xoa '\n' con lai sau scanf lua chon menu
+    
 
     printf("Nhap ID can sua: ");
     fgets(changeId, sizeof(changeId), stdin);
@@ -186,6 +186,7 @@ int main() {
                 createAccount();
                 break;
             case 2:
+                clearStdin();  // Xoa '\n' con lai sau scanf lua chon menu
                 UpdateInfo();
                 break;
             case 9:
@@ -195,10 +196,11 @@ int main() {
                 showAccountList();
                 break;
             default:
-                printf("Chuc nang chua duoc cai dat hoac khong hop le.\n");
+                printf("Chuc nang khong hop le.\n");
                 break;
         }
     } while (choice != 9);
 
     return 0;
 }
+

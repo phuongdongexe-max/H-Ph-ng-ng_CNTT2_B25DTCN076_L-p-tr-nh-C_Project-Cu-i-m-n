@@ -10,8 +10,13 @@ typedef struct {
 	int status;
 } Account;
 
-Account list[MAX];
-int currentSize = 0;
+Account user[MAX] = {
+{1, "Phuong Dong", "0886634987", 0.00, 1},
+{2, "Nguyen Hung", "0919675834", 0.00, 1},
+{3, "Quoc Trung", "09887778534", 0.00, 0},
+{4, "Sy Nhan", "0919945989", 0.00, 1},
+};
+int size = 4;
 
 void deleteNewLine(char *str) {
     int len = strlen(str);
@@ -21,13 +26,30 @@ void deleteNewLine(char *str) {
 }/*Ham xoa ki tu xuong dong sau khi dung fgets*/
 
 void createAccount (){
-	if (currentSize >= MAX){
-		printf("Danh sach da day. Khong the nhap them\n");
+	int currentSize;
+	printf("Nhap so tai khoan muon them: "\n);
+	scanf("%d", &newSize);
+	if (currentSize > MAX || currentSize <= 0){
+		printf("Khong hop le!!!\n");
 		return;
 	}
-	
-	Account acc;
-	
+	for( int i=0; i < currentSize; i++ ){
+		printf("|%-39s|\n", "Nhap thong tin tai khoan\n");
+		printf("Nhap ma tai khoan: "\n);
+		fgets(user[i].accountId, sizeof(user[i].accountId), stdin);
+		deleteNewLine(user[i].accountId);
+		printf("Nhap ho va ten chu tai khoan: "\n);
+		fgets(user[i].fullName, sizeof(user[i].fullName), stdin);
+		deleteNewLine(user[i].fullName);
+		printf("Nhap so dien thoai: \n");
+		fgets(user[i].phone, sizeof(user[i].phone), stdin);
+		deleteNewLine(user[i].phone);
+		printf("Nhap so du: \n");
+		scanf("%d", &user[i].balance);
+		fflush(stdin);
+	}
+	size = currentSize;
+	printf("Da them tai khoan thanh cong!!!\n");
 }
 
 typedef struct {
@@ -39,10 +61,8 @@ typedef struct {
 	char date[20];
 };
 
-int main (){
-	int choice;
-	do{
-		printf("+-------------------------------------+\n");
+void printMenu (){
+	printf("+-------------------------------------+\n");
 	printf("|----------QUAN LY GIAO DICH----------|\n");
 	printf("+-------------------------------------+\n");
 	printf("|%-37s|\n","1. Them tai khoan moi");
@@ -55,10 +75,17 @@ int main (){
 	printf("|%-37s|\n","8. Lich su giao dich");
 	printf("|%-37s|\n","9. Thoat chuong trinh");
 	printf("+-------------------------------------+\n");
-		printf("Moi ban nhap lua chon: \n");
-		scanf("%d", &choice);
+}
+
+int main (){
+	int choice;
+	do{
+	
+	printf("Moi ban nhap lua chon: \n");
+	scanf("%d", &choice);
 	}
 	while (choice !=9);
 	return 0;	
 }
+
 

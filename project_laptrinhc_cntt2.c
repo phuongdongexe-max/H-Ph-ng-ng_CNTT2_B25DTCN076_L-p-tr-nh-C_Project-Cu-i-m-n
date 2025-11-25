@@ -42,7 +42,7 @@ void deleteNewLine(char *str) {
 void clearStdin() {
     int c;
     while ((c = getchar()) != '\n' && c != '\0');
-}  // Xoa '\n' con lai sau scanf lua chon menu
+}  // Xoa '\n' con lai sau scanf lua chon
 
 // Tim index tai khoan theo accountId
 int findIndex(const char *id) {
@@ -128,18 +128,38 @@ void UpdateInfo() {
     printf("Cap nhat thong tin xong!\n");
 }
 
-void ChangeStatus(){
-	char checkId[20];
-	printf("Thay doi trang thai tai khoan.\n");
-	printf("Nhap ID can thay doi: ");
-	fgets(checkId, sizeof(checkId), stdin);
-    deleteNewLine(checkId);
-    int idx = findIndex(checkId);
+void ChangeStatus(struct Account user[], int size) {
+    char accId[20];
+    printf("Nhap so tai khoan muon khoa/xoa: ");
+    scanf("%s", accId);
+
+    // Tim vi tri cua cua id da nhap co ton tai hay khong
+    int idx = -1;
+    for (int i = 0; i < size; i++) {
+        if (strcmp(user[i].accountId, accId) == 0) {
+            idx = i;
+            break;
+        }
+    }
     if (idx == -1) {
-        printf("Error: Khong tim thay tai khoan!\n");
+        printf("Khong tim thay tai khoan\n");
         return;
     }
     
+    char checkDecide;
+    showAccountList();
+    printf("Xac nhan ban muon thay doi trang thai tai khoan hay khong? (y/n): ");
+    scanf(" %c", &checkDecide); //nhap lua chon de kiem tra quyet dinh
+    if (checkDecide == 'y' || checkDecide == 'Y') {
+        user[idx].status = 0;
+        printf("Tai khoan da duoc khoa\n");
+    } else {
+        printf("Huy thao tac\n");
+    	}
+}
+
+void search(){
+	
 }
 
 void printMenu() {
@@ -205,7 +225,7 @@ int main() {
                 UpdateInfo();
                 break;
             case 3:
-            	
+            	ChangeStatus( user, size);
             	break;
             case 9:
                 printf("Thoat chuong trinh...\n");

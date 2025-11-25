@@ -41,8 +41,8 @@ void deleteNewLine(char *str) {
 // Xoa bo dem stdin khi dung scanf
 void clearStdin() {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
+    while ((c = getchar()) != '\n' && c != '\0');
+}  // Xoa '\n' con lai sau scanf lua chon menu
 
 // Tim index tai khoan theo accountId
 int findIndex(const char *id) {
@@ -62,24 +62,30 @@ void createAccount() {
         clearStdin();
         return;
     }
-
     if (currentSize <= 0 || size + currentSize > MAX) {
         printf("So luong khong hop le (toi da %d, dang co %d)!!!\n", MAX, size);
         return;
     }
-
     clearStdin();
 
     for (int i = 0; i < currentSize; i++) {
         int idx = size + i;
-        printf("\n|%-39s|\n", "Nhap thong tin tai khoan");
-
+        printf("Nhap thong tin tai khoan \n");
         printf("Nhap ma tai khoan: ");
         fgets(user[idx].accountId, sizeof(user[idx].accountId), stdin);
-        deleteNewLine(user[idx].accountId);
-
+        for(int i=0; i<size; i++){
+        	if(strcmp(user[idx].accountId, user[i].accountId) == -1){
+        		printf("Loi xac thuc!!! Trung ID da co. Vui long nhap lai.\n");
+        		return;
+			}
+		}
+		deleteNewLine(user[idx].accountId);
         printf("Nhap ho va ten chu tai khoan: ");
         fgets(user[idx].fullName, sizeof(user[idx].fullName), stdin);
+        if (user[idx].fullName[0] == '\0' || user[idx].fullName[0] == '\n'){
+        	printf("Khong duoc de trong ho va ten!!\n");
+        	return;
+		}
         deleteNewLine(user[idx].fullName);
 
         printf("Nhap so dien thoai: ");
@@ -87,30 +93,24 @@ void createAccount() {
         deleteNewLine(user[idx].phone);
 
         printf("Nhap so du: ");
-        if (scanf("%lf", &user[idx].balance) != 1) {
+        if ( scanf("%lf", &user[idx].balance) != 1) {
             printf("Nhap sai dinh dang so du!\n");
             clearStdin();
             user[idx].balance = 0.0;
         }
         clearStdin();
-
         user[idx].status = 1;
     }
-
     size += currentSize;
     printf("\nDa them tai khoan thanh cong! Tong so tai khoan: %d\n", size);
-}
+	}
 
 void UpdateInfo() {
     char changeId[20];
-
     printf("Cap nhat thong tin.\n");
-    
-
     printf("Nhap ID can sua: ");
     fgets(changeId, sizeof(changeId), stdin);
     deleteNewLine(changeId);
-
     int idx = findIndex(changeId);
     if (idx == -1) {
         printf("Error: Khong tim thay tai khoan!\n");
@@ -125,8 +125,21 @@ void UpdateInfo() {
     printf("Current Phone: %s. New Phone: ", user[idx].phone);
     fgets(user[idx].phone, sizeof(user[idx].phone), stdin);
     deleteNewLine(user[idx].phone);
+    printf("Cap nhat thong tin xong!\n");
+}
 
-    printf("-> Success: Cap nhat thong tin xong!\n");
+void ChangeStatus(){
+	char checkId[20];
+	printf("Thay doi trang thai tai khoan.\n");
+	printf("Nhap ID can thay doi: ");
+	fgets(checkId, sizeof(checkId), stdin);
+    deleteNewLine(checkId);
+    int idx = findIndex(checkId);
+    if (idx == -1) {
+        printf("Error: Khong tim thay tai khoan!\n");
+        return;
+    }
+    
 }
 
 void printMenu() {
@@ -170,6 +183,8 @@ void showAccountList() {
     printf("+-----------------------------------------------------------------------------------+\n");
 }
 
+
+
 int main() {
     int choice;
     do {
@@ -189,6 +204,9 @@ int main() {
                 clearStdin();  // Xoa '\n' con lai sau scanf lua chon menu
                 UpdateInfo();
                 break;
+            case 3:
+            	
+            	break;
             case 9:
                 printf("Thoat chuong trinh...\n");
                 break;
@@ -203,4 +221,3 @@ int main() {
 
     return 0;
 }
-

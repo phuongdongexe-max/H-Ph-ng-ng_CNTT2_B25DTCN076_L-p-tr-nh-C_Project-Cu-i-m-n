@@ -159,7 +159,31 @@ void ChangeStatus(struct Account user[], int size) {
 }
 
 void search(){
-	
+	char accId[20];
+    printf("Nhap so tai khoan can tim kiem: ");
+    scanf("%s", accId);
+	int idx = -1;
+    for (int i = 0; i < size; i++) {
+        if (strcmp(user[i].accountId, accId) == 0) {
+            idx = i;
+            printf("+-----------------------------------------------------------------------------------+\n");
+    printf("| %-4s | %-6s | %-20s | %-15s | %-11s | %-10s |\n",
+           "STT", "Ma TK", "Ho ten", "So dien thoai", "So du", "Trang thai");
+    printf("| %-4d | %-6s | %-20s | %-15s | %-11.2lf | %-10s |\n",
+        i + 1,
+        user[i].accountId,
+        user[i].fullName,
+        user[i].phone,
+        user[i].balance,
+        user[i].status == 1 ? "Hoat dong" : "Khoa");
+    printf("+-----------------------------------------------------------------------------------+\n");
+    }
+        }
+        
+    if (idx == -1) {
+        printf("Khong tim thay tai khoan\n");
+        return;
+    }
 }
 
 void printMenu() {
@@ -226,6 +250,9 @@ int main() {
                 break;
             case 3:
             	ChangeStatus( user, size);
+            	break;
+            case 4:
+            	search();
             	break;
             case 9:
                 printf("Thoat chuong trinh...\n");

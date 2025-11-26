@@ -11,10 +11,10 @@ struct Account {
 };
 
 struct Account user[MAX] = {
-    {"1", "Phuong Dong", "0886634987", 0.00, 1},
-    {"2", "Nguyen Hung", "0919675834", 0.00, 1},
+    {"1", "Phuong Dong", "0886634987", 99.00, 1},
+    {"2", "Nguyen Hung", "0919675834", 98.00, 1},
     {"3", "Quoc Trung", "09887778534", 0.00, 0},
-    {"4", "Sy Nhan", "0919945989", 0.00, 1},
+    {"4", "Sy Nhan", "0919945989", 888.00, 1},
 };
 int size = 4;
 
@@ -36,7 +36,14 @@ void UpdateInfo();
 void ChangeStatus(struct Account user[], int size);
 void search();
 void showBooksPaginate();
+void softAccountList();
 
+//Nguyen mau ham cac chuc nang khong co trong menu
+void printMenu();
+void showAccountList();
+void deleteNewLine(char *str);
+void clearStdin();
+int findIndex(const char *id); // Ham dung chung cho chuc nang Updatr va Tim kien
 
 int main() {
     int choice;
@@ -65,8 +72,12 @@ int main() {
             	break;
             case 5:
             	showBooksPaginate();
+            	break;
+            case 6:
+            	softAccountList(user, size);
+            	break;
             case 9:
-                printf("Thoat chuong trinh...\n");
+                printf("Thoat chuong trinh.\n");
                 break;
             case 10:
                 showAccountList();
@@ -254,23 +265,8 @@ void showBooksPaginate() {
        int start = (page_number-1)*page_size;
        int end = start + page_size;
        printf("Trang %d/%d :\n\n", page_number, total_pages); // trang 1/5
-       printf("+-----------------------------------------------------------------------------------+\n");
-    printf("| %-4s | %-6s | %-20s | %-15s | %-11s | %-10s |\n",
-           "STT", "Ma TK", "Ho ten", "So dien thoai", "So du", "Trang thai");
-    printf("+-----------------------------------------------------------------------------------+\n");
-
-    for (int i = 0; i < size; i++) {
-        printf("| %-4d | %-6s | %-20s | %-15s | %-11.2lf | %-10s |\n",
-               i + 1,
-               user[i].accountId,
-               user[i].fullName,
-               user[i].phone,
-               user[i].balance,
-               user[i].status == 1 ? "Hoat dong" : "Khoa");
-    }
-    
-    printf("+-----------------------------------------------------------------------------------+\n");
-        fflush(stdin);
+       showAccountList();
+    	fflush(stdin);
        printf("Ban co muon thoat hay ko ? (y/n)");
        char ch = getchar();
        if (ch == 'y' || ch == 'Y') {
@@ -281,39 +277,40 @@ void showBooksPaginate() {
 
 void softAccountList(){
 	int choice;
-	printf("Lua chon sap xep: ");
+	printf("Lua chon sap xep: \n");
 	printf("1. Theo so du tai khoan (Giam dan).\n");
 	printf("2. Theo ten chu tai khoan (A -> Z).\n");
 	scanf("%d", &choice);
-	if(choice != 1 || choice != 2){
-		printf("Sai dinh dang lua chon!!!");
-		return;
-	}
-	switch(choice){
+	
+	struct Account temp;//Ham tam de hoan doi vi tri cac phan tu ben trong sau vong lap
+	switch(choice) {
 		case 1:
-			for(int i=0; i<size; i++){
-				for(int j=0; j<size; j++){
-					if(user[i].balance < user[i+1].balance){
-						int temp = user[i].balance;
-						user[i].balance = user[i+1].balance;
-						user[i+1].balance = temp;
-					}
+			for (int i = 0; i < size - 1; i++) {
+				for (int j = 0; j < size - i - 1; j++) {
+					if (user[j].balance < user[j + 1].balance) {
+						temp = user[j];
+						user[j] = user[j + 1];
+						user[j + 1] = temp;	
+					}	
 				}
 			}
+			printf("Da sap xep xong !!!\n");
 			break;
 			
-		case 2:
-			for(int i=0; i<size; i++){
-				for(int j=0; j<size; i++){
-					if(user[i].fullName[0] > user[i+1].fullName[0]){
-					int temp = user[i].fullName;
-						user[i].fullName = user[i+1].fullName;
-						user[i+1].fullName = temp;	
+		case 2: 
+			for (int i = 0; i < size; i++) {
+				for (int j = i + 1; j < size; j++) {
+					if (strcmp(user[i].fullName, user[j].fullName) > 0) {
+						temp = user[i];
+						user[i] = user[j];
+						user[j] = temp;
 					}
 				}
 			}
+			printf("Da sap xep xong !!!\n");
 			break;
-	}
+		}
+	showAccountList();
 }
 
 void printMenu() {

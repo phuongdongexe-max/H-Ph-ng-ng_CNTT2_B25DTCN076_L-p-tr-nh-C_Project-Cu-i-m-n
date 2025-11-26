@@ -30,6 +30,58 @@ struct Transaction {
 struct Transaction trans[MAX];
 int transSize = 0;
 
+//Nguyen mau ham trong Menu
+void createAccount();
+void UpdateInfo();
+void ChangeStatus(struct Account user[], int size);
+void search();
+void showBooksPaginate();
+
+
+int main() {
+    int choice;
+    do {
+        printMenu();
+        printf("Moi ban nhap lua chon: ");
+        if (scanf("%d", &choice) != 1) {
+            printf("Nhap sai dinh dang, vui long nhap so!\n");
+            clearStdin();
+            continue;
+        }
+
+        switch (choice) {
+            case 1:
+                createAccount();
+                break;
+            case 2:
+                clearStdin();  // Xoa '\n' con lai sau scanf lua chon menu
+                UpdateInfo();
+                break;
+            case 3:
+            	ChangeStatus( user, size);
+            	break;
+            case 4:
+            	search();
+            	break;
+            case 5:
+            	showBooksPaginate();
+            case 9:
+                printf("Thoat chuong trinh...\n");
+                break;
+            case 10:
+                showAccountList();
+                break;
+            default:
+                printf("Chuc nang khong hop le.\n");
+                break;
+        }
+    } while (choice != 9);
+
+    return 0;
+}
+
+
+
 // Xoa ky tu xuong dong sau khi dung fgets
 void deleteNewLine(char *str) {
     int len = strlen(str);
@@ -167,16 +219,16 @@ void search(){
         if (strcmp(user[i].accountId, accId) == 0) {
             idx = i;
             printf("+-----------------------------------------------------------------------------------+\n");
-    printf("| %-4s | %-6s | %-20s | %-15s | %-11s | %-10s |\n",
-           "STT", "Ma TK", "Ho ten", "So dien thoai", "So du", "Trang thai");
-    printf("| %-4d | %-6s | %-20s | %-15s | %-11.2lf | %-10s |\n",
-        i + 1,
-        user[i].accountId,
-        user[i].fullName,
-        user[i].phone,
-        user[i].balance,
-        user[i].status == 1 ? "Hoat dong" : "Khoa");
-    printf("+-----------------------------------------------------------------------------------+\n");
+    		printf("| %-4s | %-6s | %-20s | %-15s | %-11s | %-10s |\n",
+           			"STT", "Ma TK", "Ho ten", "So dien thoai", "So du", "Trang thai");
+    		printf("| %-4d | %-6s | %-20s | %-15s | %-11.2lf | %-10s |\n",
+        		i + 1,
+        		user[i].accountId,
+        		user[i].fullName,
+        		user[i].phone,
+        		user[i].balance,
+        		user[i].status == 1 ? "Hoat dong" : "Khoa");
+		    printf("+-----------------------------------------------------------------------------------+\n");
     }
         }
         
@@ -184,6 +236,84 @@ void search(){
         printf("Khong tim thay tai khoan\n");
         return;
     }
+}
+
+void showBooksPaginate() {
+    int page_number = 1;
+    int page_size =10;
+    // Tinh tong so trang
+    int kq = size/page_size;
+    int total_pages = (size % page_size == 0)? kq : kq+1;
+
+   while (1) {
+       printf("Moi ban chon so trang can xem (1-%d) : ", total_pages);
+       scanf("%d", &page_number);
+
+       // kiem tra dieu kien
+       // Tinsh vi tri bat dau va ket thuc
+       int start = (page_number-1)*page_size;
+       int end = start + page_size;
+       printf("Trang %d/%d :\n\n", page_number, total_pages); // trang 1/5
+       printf("+-----------------------------------------------------------------------------------+\n");
+    printf("| %-4s | %-6s | %-20s | %-15s | %-11s | %-10s |\n",
+           "STT", "Ma TK", "Ho ten", "So dien thoai", "So du", "Trang thai");
+    printf("+-----------------------------------------------------------------------------------+\n");
+
+    for (int i = 0; i < size; i++) {
+        printf("| %-4d | %-6s | %-20s | %-15s | %-11.2lf | %-10s |\n",
+               i + 1,
+               user[i].accountId,
+               user[i].fullName,
+               user[i].phone,
+               user[i].balance,
+               user[i].status == 1 ? "Hoat dong" : "Khoa");
+    }
+    
+    printf("+-----------------------------------------------------------------------------------+\n");
+        fflush(stdin);
+       printf("Ban co muon thoat hay ko ? (y/n)");
+       char ch = getchar();
+       if (ch == 'y' || ch == 'Y') {
+           break;
+       }
+   }
+}
+
+void softAccountList(){
+	int choice;
+	printf("Lua chon sap xep: ");
+	printf("1. Theo so du tai khoan (Giam dan).\n");
+	printf("2. Theo ten chu tai khoan (A -> Z).\n");
+	scanf("%d", &choice);
+	if(choice != 1 || choice != 2){
+		printf("Sai dinh dang lua chon!!!");
+		return;
+	}
+	switch(choice){
+		case 1:
+			for(int i=0; i<size; i++){
+				for(int j=0; j<size; j++){
+					if(user[i].balance < user[i+1].balance){
+						int temp = user[i].balance;
+						user[i].balance = user[i+1].balance;
+						user[i+1].balance = temp;
+					}
+				}
+			}
+			break;
+			
+		case 2:
+			for(int i=0; i<size; i++){
+				for(int j=0; j<size; i++){
+					if(user[i].fullName[0] > user[i+1].fullName[0]){
+					int temp = user[i].fullName;
+						user[i].fullName = user[i+1].fullName;
+						user[i+1].fullName = temp;	
+					}
+				}
+			}
+			break;
+	}
 }
 
 void printMenu() {
@@ -229,42 +359,3 @@ void showAccountList() {
 
 
 
-int main() {
-    int choice;
-    do {
-        printMenu();
-        printf("Moi ban nhap lua chon: ");
-        if (scanf("%d", &choice) != 1) {
-            printf("Nhap sai dinh dang, vui long nhap so!\n");
-            clearStdin();
-            continue;
-        }
-
-        switch (choice) {
-            case 1:
-                createAccount();
-                break;
-            case 2:
-                clearStdin();  // Xoa '\n' con lai sau scanf lua chon menu
-                UpdateInfo();
-                break;
-            case 3:
-            	ChangeStatus( user, size);
-            	break;
-            case 4:
-            	search();
-            	break;
-            case 9:
-                printf("Thoat chuong trinh...\n");
-                break;
-            case 10:
-                showAccountList();
-                break;
-            default:
-                printf("Chuc nang khong hop le.\n");
-                break;
-        }
-    } while (choice != 9);
-
-    return 0;
-}

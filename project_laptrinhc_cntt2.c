@@ -79,7 +79,6 @@ int main() {
     	printf("+-------------------------------------+\n");
         printf("Chon chuc nang: ");
         scanf("%d", &choice);
-        
         switch(choice) {
             case 1: 
 				addAccount(); 
@@ -274,9 +273,9 @@ void searchAccount() {
     convertToLower(keyword, keywordLower);
 
     /* In header bang ket qua */
-    printf("\n%-10s | %-25s | %-15s | %-15s | %-10s\n", 
-           "ID", "Ho va Ten", "So Dien Thoai", "So Du", "Trang Thai");
-    printf("--------------------------------------------------------------------------------------\n");
+    printf("+-----------+----------------------+-----------------+-----------------+----------------+\n");
+        printf("|%-10s | %-20s | %-15s | %-15s | %-15s|\n", "    ID", "      Ho va Ten", " So Dien Thoai", "     So Du", "  Trang Thai");
+		printf("+-----------+----------------------+-----------------+-----------------+----------------+\n");
 
     /* B2: Duyet mang va so sanh */
     for (i = 0; i < accCount; i++) {
@@ -300,17 +299,19 @@ void searchAccount() {
         }
 
         if (match) {
-            printf("%-10s | %-25s | %-15s | %-15.2lf | %-10s\n", 
+            printf("|%-10s | %-20s | %-15s | %-15.2lf | %-15s|\n", 
                    accounts[i].accountId, 
                    accounts[i].fullName, 
                    accounts[i].phone, 
                    accounts[i].balance, 
-                   accounts[i].status == 1 ? "Open" : "Lock");
+                   accounts[i].status == 1 ? "Dang hoat dong" : "Dang bi khoa");
             found = 1;
         }
     }
-    printf("--------------------------------------------------------------------------------------\n");
-    if (!found) printf("(Khong tim thay ket qua nao phu hop)\n");
+    printf("+-----------+----------------------+-----------------+-----------------+----------------+\n");
+    if (!found){
+    	printf("(Khong tim thay ket qua nao phu hop)\n");
+	} 
 }
 
 /* F05: Hien thi danh sach phan trang, co so trang/tong so trang, chon y/n */
@@ -327,29 +328,27 @@ void listAccounts() {
 
     while (page <= totalPages) {
         /* Xoa man hinh (tuong trung) bang cach xuong dong nhieu lan hoac in header moi */
-        printf("\nDanh sach tai khoan(Trang %d / %d)\n", page, totalPages);
-        printf("%-10s | %-20s | %-15s | %-15s | %-10s\n", 
-               "ID", "Ho va Ten", "So Dien Thoai", "So Du", "Trang Thai");
-        printf("----------------------------------------------------------------------------------\n");
-        
-        /* Tinh vi tri bat dau va ket thuc cua trang hien tai */
+        printf("+-----------+----------------------+-----------------+-----------------+----------------+\n");
+        printf("|%-10s | %-20s | %-15s | %-15s | %-15s|\n", "    ID", "      Ho va Ten", " So Dien Thoai", "     So Du", "  Trang Thai");
+		printf("+-----------+----------------------+-----------------+-----------------+----------------+\n");        
+		/* Tinh vi tri bat dau va ket thuc cua trang hien tai */
         int start = (page - 1) * rowsPerPage;
         int end = start + rowsPerPage;
         if (end > accCount) end = accCount; /* Gioi han khong vuot qua tong so */
 
         for (i = start; i < end; i++) {
-            printf("%-10s | %-20s | %-15s | %-15.2lf | %-10s\n", 
+            printf("|%-10s | %-20s | %-15s | %-15.2lf | %-15s|\n", 
                    accounts[i].accountId, 
                    accounts[i].fullName, 
                    accounts[i].phone, 
                    accounts[i].balance,
                    accounts[i].status == 1 ? "Dang hoat dong" : "Dang bi khoa");
         }
-        printf("----------------------------------------------------------------------------------\n");
+        printf("+-----------+----------------------+-----------------+-----------------+----------------+\n");
+        printf("Danh sach tai khoan(Trang %d / %d)\n", page, totalPages);
         
         /*thao tac chuyen trang */
         if (page == totalPages) {
-            printf("[THONG BAO] Da hien thi het danh sach.\n");
             break; /* Het trang thi thoat vong lap */
         } else {
             printf("Tiep tuc xem trang sau? (y: Co, n: Khong): ");
@@ -441,16 +440,15 @@ void transactionHistory() {
     char id[20];
     int i, found = 0;
     printf("\nLich su thanh toan\n");
-    printf("Nhap ID can xem: "); scanf("%s", id);
-    printf("%-10s %-10s %-10s %-15s %s\n", "Ma GD", "Gui", "Nhan", "So Tien", "Loai");
+    printf("Nhap ID can xem: "); 
+	scanf("%s", id);
+	clearBuffer();
+    printf("%-10s %-10s %-10s %-15s %s\n", "Ma GD", "Gui", "Nhan", "So Tien", "Loai giao dich");
     for (i = 0; i < transCount; i++) {
         if (strcmp(transactions[i].senderId, id) == 0 || strcmp(transactions[i].receiverId, id) == 0) {
-            printf("%-10s %-10s %-10s %-15.0lf %s\n", 
-                transactions[i].transId, transactions[i].senderId, transactions[i].receiverId, 
-                transactions[i].amount, transactions[i].type);
+            printf("%-10s %-10s %-10s %-15.0lf %s\n", transactions[i].transId, transactions[i].senderId, transactions[i].receiverId, transactions[i].amount, transactions[i].type);
             found = 1;
         }
     }
     if (!found) printf("(Chua co giao dich nao)\n");
 }
-

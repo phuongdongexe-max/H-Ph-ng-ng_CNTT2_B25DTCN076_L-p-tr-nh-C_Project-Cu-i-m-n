@@ -116,7 +116,7 @@ int main() {
 
 void clearBuffer() {
     int c;
-    while ((c = getchar()) != '\n' && c != '\0');
+    while ((c = getchar()) != '\n' && c != -1);
 } // xoa kí tu xuong dong
 
 int findIndexById(char *id) {
@@ -140,14 +140,14 @@ int isPhoneDuplicate(char *phone, char *excludeId) {
 } // ham kiem tra trung lap
 
 void addAccount() {
-    struct Account newAcc;
+   struct Account newAcc;
     int valid = 0;
     
     if (accCount >= MAX_ACC) {
         printf("!! Danh sach da day.\n"); 
 		return;
     }
-    printf("\nThem tai khoan moi: \n");
+    printf("Them tai khoan moi: \n");
     clearBuffer();
 
     while (!valid) {
@@ -187,7 +187,7 @@ void updateAccount() {
     char id[20], tempName[50], tempPhone[15];
     int idx;
     
-    printf("\nCap nhat thong tin\n");
+    printf("Cap nhat thong tin\n");
     printf("Nhap ID can sua: "); 
 	scanf("%s", id);
     idx = findIndexById(id);
@@ -197,17 +197,18 @@ void updateAccount() {
 		}
     clearBuffer();
     
-    printf("Nhap Ten moi: %s): ", accounts[idx].fullName);
+    printf("Nhap Ten moi (Hien tai: %s): ", accounts[idx].fullName);
     fgets(tempName, 50, stdin);
     tempName[strcspn(tempName, "\n")] = 0;
     if (strlen(tempName) > 0) {
     	strcpy(accounts[idx].fullName, tempName);
 	}
+	
     printf("Nhap SDT moi (Hien tai: %s): ", accounts[idx].phone);
     scanf("%s", tempPhone);
     if (isPhoneDuplicate(tempPhone, accounts[idx].accountId)){
     	printf("So dien thoai da duoc su dung o tai khoan khac.\n");
-	} 
+	}
     else {
         strcpy(accounts[idx].phone, tempPhone);
         printf("=> Cap nhat thanh cong!\n");
@@ -217,7 +218,7 @@ void updateAccount() {
 void lockAccount() {
     char id[20];
     int idx;
-    printf("\nThay doi trang thai tai khoan\n");
+    printf("Thay doi trang thai tai khoan\n");
     printf("Nhap ID: ");
 	scanf("%s", id);
     idx = findIndexById(id);
@@ -249,7 +250,7 @@ void searchAccount() {
     char dataLower[50];    /* Du lieu (Ten/ID) da chuyen ve chu thuong */
     int i, found = 0;
 
-    printf("\n--- TRA CUU THONG TIN ---\n");
+    printf("Tra cuu thong tin\n");
     printf("1. Tim theo ID\n");
     printf("2. Tim theo Ten\n");
     printf("Chon phuong thuc (1 hoac 2): ");
@@ -371,7 +372,7 @@ void listAccounts() {
 void sortAccounts() {
     int choice, i, j;
     struct Account temp; //tao mang luu gia tri de luu tam gia tri khi sap xep doi vi tri
-    printf("\nSap xep\n 1. Ten (A-Z)\n 2. So du (Giam dan)\n Chon: ");
+    printf("Sap xep\n 1. Ten (A-Z)\n 2. So du (Giam dan)\n Chon: ");
     scanf("%d", &choice);
     for (i = 0; i < accCount - 1; i++) {
         for (j = i + 1; j < accCount; j++) {
@@ -398,7 +399,7 @@ void transferMoney() {
     int sIdx, rIdx;
     struct Transaction t;
     
-    printf("\nThuc hien giao dich\n");
+    printf("Thuc hien giao dich\n");
     printf("ID Nguoi Gui: "); 
 	scanf("%s", sId);
     printf("ID Nguoi Nhan: "); 
@@ -407,18 +408,18 @@ void transferMoney() {
     sIdx = findIndexById(sId); 
 	rIdx = findIndexById(rId);
     if (sIdx == -1 || rIdx == -1) { 
-	printf("!! ID khong ton tai.\n"); 
+	printf("ID khong ton tai.\n"); 
 	return; 
 	}
     if (!accounts[sIdx].status || !accounts[rIdx].status) { 
-		printf("!! Tai khoan bi khoa.\n"); 
+		printf("Tai khoan bi khoa.\n"); 
 	return; 
 	}
     
     printf("Nhap so tien: "); 
 	scanf("%lf", &amount);
     if (amount <= 0 || accounts[sIdx].balance < amount) { 
-		printf("!! So du khong du.\n"); 
+		printf("So du khong du.\n"); 
 	return; 
 	}
     
@@ -439,8 +440,8 @@ void transferMoney() {
 void transactionHistory() {
     char id[20];
     int i, found = 0;
-    printf("\nLich su thanh toan\n");
-    printf("Nhap ID can xem: "); 
+    printf("Lich su thanh toan\n");
+    printf("Nhap ID can xem: ");
 	scanf("%s", id);
 	clearBuffer();
     printf("%-10s %-10s %-10s %-15s %s\n", "Ma GD", "Gui", "Nhan", "So Tien", "Loai giao dich");
@@ -450,5 +451,8 @@ void transactionHistory() {
             found = 1;
         }
     }
-    if (!found) printf("(Chua co giao dich nao)\n");
+    if (!found){
+    	printf("(Chua co giao dich nao)\n");
+	}
+	return; 
 }

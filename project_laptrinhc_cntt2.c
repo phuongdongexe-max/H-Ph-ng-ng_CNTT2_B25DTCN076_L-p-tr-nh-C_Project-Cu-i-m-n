@@ -184,36 +184,79 @@ void addAccount() {
 }
 
 void updateAccount() {
-    char id[20], tempName[50], tempPhone[15];
+    char id[20];
     int idx;
-    
+
     printf("Cap nhat thong tin\n");
-    printf("Nhap ID can sua: "); 
-	scanf("%s", id);
+    printf("Nhap ID can sua: ");
+    scanf("%s", id);
+
     idx = findIndexById(id);
-    if (idx == -1) { 
-		printf("!! Khong tim thay ID.\n"); 
-		return; 
-		}
-    clearBuffer();
-    
-    printf("Nhap Ten moi (Hien tai: %s): ", accounts[idx].fullName);
-    fgets(tempName, 50, stdin);
-    tempName[strcspn(tempName, "\n")] = 0;
-    if (strlen(tempName) > 0) {
-    	strcpy(accounts[idx].fullName, tempName);
-	}
-	
-    printf("Nhap SDT moi (Hien tai: %s): ", accounts[idx].phone);
-    scanf("%s", tempPhone);
-    if (isPhoneDuplicate(tempPhone, accounts[idx].accountId)){
-    	printf("So dien thoai da duoc su dung o tai khoan khac.\n");
-	}
-    else {
+    if (idx == -1) {
+        printf("!! Khong tim thay ID.\n");
+        return;
+    }
+
+    clearBuffer(); // xoa \n sau scanf
+
+    char tempName[50];
+    char tempPhone[20];
+
+    // nhap ten moi
+    while (1) {
+        printf("Nhap Ten moi (Enter de giu nguyen) (Hien tai: %s): ", accounts[idx].fullName);
+        fgets(tempName, sizeof(tempName), stdin);
+        tempName[strcspn(tempName, "\n")] = 0; // bo \n
+
+        if (strlen(tempName) == 0) {
+            // nguoi dung bo trong -> giu nguyen ten cu
+            printf("Ten duoc giu nguyen: %s\n", accounts[idx].fullName);
+            break;
+        }
+
+        if (strcmp(tempName, accounts[idx].fullName) == 0) {
+            // nhap giong ten cu -> yeu cau nhap lai
+            printf("Ten moi dang giong Ten cu. Vui long nhap ten khac hoac bo trong de giu nguyen.\n");
+            continue;
+        }
+
+        // Ten hop le -> cap nhat
+        strcpy(accounts[idx].fullName, tempName);
+        printf("=> Cap nhat Ten thanh cong!\n");
+        break;
+    }
+
+    // cap nhat sdt
+    while (1) {
+        printf("Nhap SDT moi (Enter de giu nguyen) (Hien tai: %s): ", accounts[idx].phone);
+        fgets(tempPhone, sizeof(tempPhone), stdin);
+        tempPhone[strcspn(tempPhone, "\n")] = 0; // bo \n
+
+        if (strlen(tempPhone) == 0) {
+            // bo trong -> giu nguyen so dien thoai cu
+            printf("So dien thoai duoc giu nguyen: %s\n", accounts[idx].phone);
+            break;
+        }
+
+        if (strcmp(tempPhone, accounts[idx].phone) == 0) {
+            // giong so cu -> bat nhap lai
+            printf("So dien thoai moi dang giong so cu. Vui long nhap SDT khac hoac bo trong de giu nguyen.\n");
+            continue;
+        }
+
+        if (isPhoneDuplicate(tempPhone, accounts[idx].accountId)) {
+            // trung voi tai khoan khac -> bat nhap lai
+            printf("So dien thoai nay da duoc su dung o tai khoan khac. Vui long nhap lai.\n");
+            continue;
+        }
+
+        // SDT hop le -> cap nhat
         strcpy(accounts[idx].phone, tempPhone);
-        printf("=> Cap nhat thanh cong!\n");
+        printf("=> Cap nhat So dien thoai thanh cong!\n");
+        break;
     }
 }
+
 
 void lockAccount() {
     char id[20];
